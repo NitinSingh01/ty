@@ -1,0 +1,11 @@
+Flask
+Flask-RESTful
+pydub
+wave
+config
+rq
+google-cloud
+google-cloud-secret-manager
+google-cloud-storage
+google-cloud-speech
+google-cloud-language

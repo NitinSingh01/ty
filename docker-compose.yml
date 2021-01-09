@@ -1,0 +1,18 @@
+version: "3"
+services:
+  redis:
+    image: redis
+    networks:
+      - project_network
+    ports:
+      - "6379:6379"  
+  service1:
+    image: asheeshg01/pr_service1
+    links:
+      - redis
+    networks:
+      - project_network
+    ports:
+      - "8080:8080"
+networks:
+  project_network:
