@@ -7,7 +7,7 @@ services:
     ports:
       - "6379:6379"  
   service1:
-    image: asheeshg01/pr_service1
+    image: ./Service_1
     links:
       - redis
     networks:
