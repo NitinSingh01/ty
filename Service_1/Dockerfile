@@ -2,7 +2,7 @@ FROM python:3.7-alpine3.9
 # Based on https://github.com/jazzdd86/alpine-flask
 
 # Install base components
-RUN apk add --no-cache python3
+RUN apk add gcc g++ musl-dev libffi-dev openssl-dev
 
 # Dir setup
 ENV APP_DIR /app
