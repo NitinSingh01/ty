@@ -23,8 +23,8 @@ from google.cloud import language_v1
 import json
 from google.cloud import secretmanager
 client = secretmanager.SecretManagerServiceClient()
-secret_name = "Voice"
-project_id = "speech-1609595980955"
+secret_name = "Speech"
+project_id = "648867592819"
 req = {"name": f"projects/{project_id}/secrets/{secret_name}/versions/latest"}
 response = client.access_secret_version(req)
 secret = response.payload.data.decode("UTF-8")
@@ -356,8 +356,7 @@ from flask import jsonify, request #Flask for Restful API
 import config #API Config
 from flask import Flask
 from rq import Queue
-from rq.job import Job
-from 	
+from rq.job import Job	
 from google.cloud import language_v1
 from google.cloud import secretmanager
 client = secretmanager.SecretManagerServiceClient()
