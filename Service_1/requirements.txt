@@ -1,5 +1,6 @@
 Flask
 Flask-RESTful
+Redis
 pydub
 wave
 config
