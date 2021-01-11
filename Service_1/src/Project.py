@@ -43,14 +43,6 @@ app = Flask(__name__) #creates the Flask instance
 # Function to pass Audio file for processing
 def translate_main(audio_file_name):
     transcript = google_transcribe(audio_file_name)
-    transcript_filename = audio_file_name.split('.')[0] + '_transcript' + '.txt'
-    write_transcripts(transcript_filename,transcript)
-    word_details = google_word_details(audio_file_name)
-    word_details_filename = transcript_filename.split('.')[0] + '_word_details' + '.txt'
-    write_word_details(word_details_filename,word_details)
-    sentiment = analyze_sentiment(transcript_filename)
-    sentiment_filename = transcript_filename.split('.')[0] + '_sentiment' + '.txt'
-    write_sentiment(sentiment_filename,sentiment)
 
 def stereo_to_mono(audio_file_name):
     sound = AudioSegment.from_wav(audio_file_name)
@@ -103,9 +95,8 @@ def upload_file():
             return resp
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join('/home/asheeshg01/input', filename))
-            redis_url = os.getenv('REDISTOGO_URL','redis://redis:8080')
-            conn = redis.from_url(redis_url)
+            #file.save(os.path.join('/home/asheeshg01/input', filename))
+            conn = Redis('redis',6379)
             q = Queue(conn)
             job = q.enqueue_call(func=translate_main, args=(file.filename,), result_ttl=50000)
             print(job.get_id())
@@ -241,25 +232,6 @@ def google_word_details(audio_file_name):
     return word_details
 
 
-# Write Speech-to-Text transcript to output file
-def write_transcripts(transcript_filename,transcript):
-    f= open(output_filepath + transcript_filename,"w+")
-    f.write(transcript)
-    f.close()
-
-
-# Write Sentiment details to output file
-def write_sentiment(sentiment_filename,sentiment):
-    f= open(output_filepath + sentiment_filename,"w+")
-    f.write(sentiment)
-    f.close()
-
-
-# Write Word details to output file
-def write_word_details(word_details_filename,word_details):
-    f= open(output_filepath + word_details_filename,"w+")
-    f.write(word_details)
-    f.close()
 
 
 # Function to retrieve sentiment of the conversation
@@ -318,6 +290,8 @@ def analyze_sentiment(transcript_filename):
 # API to retreive output based on Job Id
 @app.route("/app/v1/<job_key>", methods=['GET'])
 def get_results(job_key):
+    redis_url = os.getenv('REDISTOGO_URL','redis://redis:8080')
+    conn = Redis('redis',6379)
     q= Queue(connection=conn)
     job = q.fetch_job(job_key)
 
